@@ -1,38 +1,103 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.container {
   display: flex;
   flex-direction: column;
+  border-width: 2px;
+  border-color: black;
+  width: 80%;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin: auto;
+}
+
+.form-container {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: grid;
+  grid-template-areas:
+    "url url "
+    "depth max "
+    "button button"
+  ;
+
+  border: 3px solid pink;
+  width: 100%;
+  gap: 5px;
+}
+
+.display-container{
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-top:30px;
+  margin-bottom: 30px;
+  min-height:200px;
+  width: 100%;
+  border: 3px solid pink;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.url {
+  grid-area: url;
+  justify-content: center;
+  width: calc(100% + 20px);
+  transform: translate(-10px);
+}
+
+.max {
+  grid-area: max;
+  justify-content: start;
+  width: 100%;
+}
+
+.depth {
+  grid-area: depth;
+  justify-content: end;
+  width: 100%;
+}
+
+input {
+  border-radius: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  display: block;
+  border: 2px solid blue;
+  width: 80%;
+}
+
+.button-container {
+  margin-top: 30px;
+  grid-area: button;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+}
+
+.button {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  grid-area: button;
+  display: block;
+  border: 1px solid black;
+  border-radius: 25px;
+  width: 20%;
+  background-color: blue;
   color: white;
+  cursor:pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.button:active{
+  color:blue;
+  background-color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+label {
+  display: none;
 }

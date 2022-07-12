@@ -1,9 +1,7 @@
-import { FC, useRef, FormEvent, CSSProperties } from "react";
-type formDataType = {
-    url: string;
-    depth: number;
-    max: number;
-}
+import { FC, useRef, FormEvent,useContext } from "react";
+import { formDataType } from "../models/FormData";
+import { socketIoContext } from './../context/socketIoContext';
+
 
 const formDataInit: formDataType
     = {
@@ -13,33 +11,39 @@ const formDataInit: formDataType
 }
 
 const validateForm = (formData: formDataType) =>
-    formData.depth !== formDataInit.depth &&
-    formData.max !== formDataInit.max &&
-    formData.url !== formDataInit.url
+    formData.depth > 0 &&
+    formData.max > 0 &&
+    formData.url !== ""
 
 
 
 const RequestCrawlingForm: FC = () => {
 
 
+    const {connect} = useContext(socketIoContext)
+
     const formDataRef = useRef<formDataType>(formDataInit)
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         if (validateForm(formDataRef.current)) {
+            connect(formDataRef.current)
+        }else{
             console.log(formDataRef.current);
+            console.log(":(");
+            
         }
     };
 
     const changeDepth = (event: any) => {
 
 
-        formDataRef.current.depth = event.target.value
+        formDataRef.current.depth = parseInt(event.target.value)
     }
 
     const changeMax = (event: any) => {
 
-        formDataRef.current.max = event.target.value
+        formDataRef.current.max = parseInt(event.target.value) 
     }
 
     const changeUrl = (event: any) => {
@@ -56,14 +60,14 @@ const RequestCrawlingForm: FC = () => {
             </div>
             <div className="depth input-container">
                 <label htmlFor='depth'>Depth</label>
-                <input id='depth' placeholder="depth" type='number' onChange={changeDepth}></input>
+                <input min='0' id='depth' placeholder="depth" type='number' onChange={changeDepth}></input>
             </div>
             <div className="max input-container">
                 <label htmlFor="max">Max</label>
-                <input id='max' placeholder="max" type='number' onChange={changeMax}></input>
+                <input min='0' id='max' placeholder="max" type='number' onChange={changeMax}></input>
             </div>
             <div className="button-container">
-            <button className='button' type="submit">🦀 Start Crawling 🦀</button>
+                <button className='button' type="submit">🦀 Start Crawling 🦀</button>
             </div>
         </form>
     )

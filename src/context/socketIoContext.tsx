@@ -5,11 +5,15 @@ import useSocketIo from './../hooks/useSocketIo';
 type ContextValue = {
     urls: string[],
     connect: (data: formDataType) => void
+    restart: (data: formDataType) => void
+    status: string
 }
 
 export const socketIoContext = createContext<ContextValue>({
     urls: [],
-    connect: (data: formDataType) => { }
+    connect: (data: formDataType) => { },
+    restart: (data: formDataType) => { },
+    status: ''
 })
 
 type props = {
@@ -19,10 +23,10 @@ type props = {
 
 const SocketIoContextProvider: FC<props> = ({ children }) => {
 
-    const { urls, connect } = useSocketIo()
+    const { status, urls, connect, restart } = useSocketIo()
 
     return (
-        <socketIoContext.Provider value={{ urls, connect }}>
+        <socketIoContext.Provider value={{ status, urls, connect, restart }}>
             {children}
         </socketIoContext.Provider>
     )

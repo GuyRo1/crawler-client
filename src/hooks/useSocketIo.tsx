@@ -3,6 +3,8 @@ import io, { Socket } from 'socket.io-client';
 import { formDataType } from "../models/FormData";
 import { ClientToServerEvents, ServerToClientEvents } from './../models/socketIoTypes';
 
+const valid = (url: string): boolean => url[0] === 'h'
+
 
 
 const useSocketIo = () => {
@@ -12,21 +14,26 @@ const useSocketIo = () => {
     const [urls, setUrls] = useState<string[]>([])
     const [status, setStatus] = useState<string>('pending')
     const [data, setData] = useState<formDataType | null>(null)
-    const updateUrls: ((url: string) => void)
-        = useCallback((url: string) => {
-            setUrls((prevData: string[]) => {
-                const newUrls = [...prevData, url];
-                return newUrls;
-            });
+    const updateUrls: ((urls: string[]) => void)
+        = useCallback((urls: string[]) => {
+            const newUrls: string[] = []
+            urls.forEach((url: string) => {
+                if (!valid(url) || urlsSet.current.has(url)) return
+                urlsSet.current.add(url)
+                newUrls.push(url)
+            })
+            setUrls((prevData: string[]) =>
+                [...prevData, ...newUrls]);
         }, [])
 
     useEffect(
         () => {
             let newSocket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
-            if (status === 'started') {
+            if (status === 'connected') {
                 newSocket = io(`http://${window.location.hostname}:3001`);
                 setSocket(newSocket);
             }
+
 
             return (() => {
                 if (newSocket)
@@ -36,14 +43,8 @@ const useSocketIo = () => {
 
     useEffect(() => {
         if (socket) {
-            socket.on('url', (url: string) => {
-                console.log(url);
-                if (!urlsSet.current.has(url)) {
-                    urlsSet.current.add(url)
-                    updateUrls(url)
-                }
-
-
+            socket.on('url', (urls: string[]) => {
+                updateUrls(urls)
             });
             socket.on('ack', () => {
                 console.log('connection established');
@@ -51,7 +52,7 @@ const useSocketIo = () => {
             })
         }
 
-    }, [socket])
+    }, [socket, updateUrls])
 
     useEffect(() => {
         if (socket && connected && data) {
@@ -61,10 +62,16 @@ const useSocketIo = () => {
 
     const connect = useCallback((data: formDataType) => {
         setData(data)
-        setStatus('started')
+        setStatus('connected')
     }, [])
 
-    return { urls, connect }
+    const restart = useCallback(
+        (data: formDataType) => {
+            setUrls([]);
+            setData(data)
+        }, [])
+
+    return { status, urls, connect, restart }
 
 }
 

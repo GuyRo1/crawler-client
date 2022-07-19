@@ -2,7 +2,6 @@ import { FC, useRef, FormEvent, useContext } from "react";
 import { formDataType } from "../models/FormData";
 import { socketIoContext } from './../context/socketIoContext';
 
-
 const formDataInit: formDataType
     = {
     url: 'https://www.mako.co.il',
@@ -54,23 +53,25 @@ const RequestCrawlingForm: FC = () => {
 
 
     return (
-        <form onSubmit={onSubmit} className='form-container'>
-            <div className="url input-container">
-                <label htmlFor="url">Url</label>
-                <input defaultValue="https://www.mako.co.il/" id='url' placeholder="url" type='text' onChange={changeUrl}></input>
-            </div>
-            <div className="depth input-container">
-                <label htmlFor='depth'>Depth</label>
-                <input defaultValue={1} min='1' id='depth' placeholder="depth" type='number' onChange={changeDepth}></input>
-            </div>
-            <div className="max input-container">
-                <label htmlFor="max">Max</label>
-                <input defaultValue={1} min='1' id='max' placeholder="max" type='number' onChange={changeMax}></input>
-            </div>
-            <div className="button-container">
-                <button className='button' type="submit">🦀 Start Crawling 🦀</button>
-            </div>
-        </form>
+        <div className="form-container">
+            <form onSubmit={onSubmit} className='form'>
+                <div className="url input-container">
+                    <label htmlFor="url">Url</label>
+                    <input defaultValue="https://www.mako.co.il/" id='url' placeholder="url" type='text' onChange={changeUrl}></input>
+                </div>
+                <div className="depth input-container">
+                    <label htmlFor='depth'>Depth</label>
+                    <input defaultValue={1} min='1' id='depth' placeholder="depth" type='number' onChange={changeDepth}></input>
+                </div>
+                <div className="max input-container">
+                    <label htmlFor="max">Max</label>
+                    <input defaultValue={1} min='1' id='max' placeholder="max" type='number' onChange={changeMax}></input>
+                </div>
+                <div className="button-container">
+                    <button className='button' type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     )
 }
 

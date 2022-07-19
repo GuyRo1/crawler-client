@@ -3,9 +3,9 @@ import { formDataType } from "./FormData";
 
 
 export interface ServerToClientEvents {
-    url: (url:string[]) => void;
-    ack: ()=>void
-
+  url: (url: string[]) => void;
+  ack: () => void;
+  finished: ()=>void;
   }
   
  export interface ClientToServerEvents {

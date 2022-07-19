@@ -1,8 +1,9 @@
-import { FC, CSSProperties } from "react";
+import { FC } from "react";
 import './App.css'
 import SocketIoContextProvider from './context/socketIoContext';
 import RequestCrawlingForm from './components/RequestCrawlingForm'
 import DisplayCrawling from './components/DisplayCrawling';
+
 
 
 const App: FC = () => {
@@ -12,7 +13,6 @@ const App: FC = () => {
         <RequestCrawlingForm />
         <DisplayCrawling />
       </div>
-
     </SocketIoContextProvider>
   );
 }

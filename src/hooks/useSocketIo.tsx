@@ -8,17 +8,23 @@ const valid = (url: string): boolean => url[0] === 'h'
 
 
 const useSocketIo = () => {
+    const dupesRef = useRef(0)
     const urlsSet = useRef<Set<string>>(new Set<string>())
+    const [dupes, setDupes] = useState(0);
     const [socket, setSocket] = useState<null | Socket<ServerToClientEvents, ClientToServerEvents>>(null);
-    const [connected, setConnected] = useState<boolean>(false)
+    const [connected, setConnected] = useState(false)
     const [urls, setUrls] = useState<string[]>([])
-    const [status, setStatus] = useState<string>('pending')
+    const [status, setStatus] = useState('pending')
     const [data, setData] = useState<formDataType | null>(null)
     const updateUrls: ((urls: string[]) => void)
         = useCallback((urls: string[]) => {
             const newUrls: string[] = []
             urls.forEach((url: string) => {
-                if (!valid(url) || urlsSet.current.has(url)) return
+                if (!valid(url) || urlsSet.current.has(url)) {
+                    dupesRef.current = dupesRef.current + 1
+                    return
+                }
+
                 urlsSet.current.add(url)
                 newUrls.push(url)
             })
@@ -50,6 +56,11 @@ const useSocketIo = () => {
                 console.log('connection established');
                 setConnected(true)
             })
+            socket.on('finished', () => {
+                setDupes(dupesRef.current)
+                socket.close()
+                setConnected(false)
+            })
         }
 
     }, [socket, updateUrls])
@@ -67,11 +78,18 @@ const useSocketIo = () => {
 
     const restart = useCallback(
         (data: formDataType) => {
+            dupesRef.current = 0;
+            setDupes(0)
             setUrls([]);
             setData(data)
-        }, [])
+            socket?.close()
+            setConnected(false)
+            const newSocket = io(`http://${window.location.hostname}:3001`);
+            setSocket(newSocket)
+            urlsSet.current = new Set<string>()
+        }, [socket])
 
-    return { status, urls, connect, restart }
+    return { dupes, connected, status, urls, connect, restart }
 
 }
 
